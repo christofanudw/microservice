@@ -14,7 +14,7 @@ module.exports = async (req,res) => {
        password: 'string|min:6',
     }
     
-    const validation = v.validate(req.body.password, schema);
+    const validation = v.validate(req.body, schema);
     
     if(validation.length){
         return res.status(400).json({
@@ -28,14 +28,14 @@ module.exports = async (req,res) => {
     *   Retrieves user model from database
     * 
     */
-   const user = await User.findOne({
-       where: {
-           email: req.body.email
+    const user = await User.findOne({
+        where: {
+            email: req.body.email
         }
     });
     
     if(!user){
-        res.status(404).json({
+        return res.status(404).json({
             status: 'error',
             message: 'User not found.',
         });
@@ -46,14 +46,14 @@ module.exports = async (req,res) => {
     *   Compares provided password w/ user password in database
     * 
     */
-   const isValidPassword = await bcrypt.compare(req.body.password, user.password);
-   
-   if(!isValidPassword){
-       res.status(404).json({
-           status: 'error',
-           message: 'User not found.',
-        });
-    }
+    await bcrypt.compare(req.body.password, user.password, (err, result) => {
+        if(!result){
+            return res.status(404).json({
+                status: 'error',
+                message: 'User not found.',
+            });
+        }
+    });
     
     /*
     *

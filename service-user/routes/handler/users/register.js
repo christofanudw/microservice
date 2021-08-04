@@ -19,7 +19,7 @@ module.exports = async (req,res) => {
     const validation = v.validate(req.body, schema);
 
     if(validation.length){
-        res.status(400).json({
+        return res.status(400).json({
             status: 'error',
             message: validation,
         });
