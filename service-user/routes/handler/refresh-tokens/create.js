@@ -4,19 +4,19 @@ const v = new Validator();
 
 module.exports = async (req,res) => {
     const userId = req.body.user_id;
-    const refreshToken = req.body.refresh_token;
+    const refreshToken = req.body.token;
 
     const schema = {
-        refresh_token: 'string',
+        token: 'string',
         user_id: 'number',
     }
 
     const validation = v.validate(req.body, schema);
 
-    if(validate.length){
+    if(validation.length){
         return res.status(400).json({
             status: 'error',
-            message: validate,
+            message: validation,
         });
     }
     
