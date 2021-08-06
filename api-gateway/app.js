@@ -29,6 +29,6 @@ app.use('/courses', verifyToken, coursesRouter);
 app.use('/media', mediaRouter);
 app.use('/orders', ordersRouter);
 app.use('/payments', paymentsRouter);
-app.use('/refresh_tokens', refreshTokensRouter);
+app.use('/refresh-tokens', refreshTokensRouter);
 
 module.exports = app;

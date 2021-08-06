@@ -16,7 +16,7 @@ module.exports = async (req,res) => {
         const accessToken = jwt.sign({ data }, JWT_SECRET_ACCESS_TOKEN, { expiresIn: JWT_ACCESS_TOKEN_EXPIRES_IN });
         const refreshToken = jwt.sign({ data }, JWT_SECRET_REFRESH_TOKEN, { expiresIn: JWT_REFRESH_TOKEN_EXPIRES_IN });
 
-        await api.post('/refresh_tokens', { token: refreshToken, user_id: data.id })
+        await api.post('/refresh-tokens', { token: refreshToken, user_id: data.id })
 
         return res.json({
             status: 'success',

@@ -53,7 +53,7 @@ module.exports = async (req,res) => {
         profession,
         avatar
     });
-
+    
     res.json({
         status: 'success',
         data: {

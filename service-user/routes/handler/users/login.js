@@ -53,22 +53,22 @@ module.exports = async (req,res) => {
                 message: 'User not found.',
             });
         }
+        /*
+        *
+        *   Returns user data as response
+        * 
+        */
+        res.json({
+            status: 'success',
+            data: {
+                id: user.id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                avatar: user.avatar,
+                profession: user.profession,
+            }
+        });
     });
     
-    /*
-    *
-    *   Returns user data as response
-    * 
-    */
-    res.json({
-        status: 'success',
-        data: {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            avatar: user.avatar,
-            profession: user.profession,
-        }
-    });
 }
