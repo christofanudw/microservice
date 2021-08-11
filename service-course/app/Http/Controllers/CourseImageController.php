@@ -2,30 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\CourseImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CourseImageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
@@ -34,41 +17,35 @@ class CourseImageController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $data = $request->all();
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $rules = [
+            'image' => 'required|url',
+            'course_id' => 'required|integer'
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        $validator = Validator::make($data, $rules);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 400);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        $courseId = $data['course_id'];
+        $course = Course::find($courseId); 
+        if(!$course){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Course data not available.'
+            ], 404);
+        }
+
+        $courseImage = CourseImage::create($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $courseImage
+        ]);
     }
 
     /**
@@ -79,6 +56,19 @@ class CourseImageController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $courseImage = CourseImage::find($id);
+        if(!$courseImage){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Image data not available.'
+            ], 404);
+        }
+
+        $courseImage->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Image data successfully deleted.'
+        ]);
     }
 }

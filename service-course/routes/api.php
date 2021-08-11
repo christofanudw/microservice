@@ -4,6 +4,7 @@ use App\Http\Controllers\ChapterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseImageController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MentorController;
 
@@ -48,4 +49,9 @@ Route::prefix('lessons')->group(function(){
     Route::get('/{id}', [LessonController::class, 'show'])->name('lessons.show');
     Route::put('/{id}', [LessonController::class, 'update'])->name('lessons.update');
     Route::delete('/{id}', [LessonController::class, 'destroy'])->name('lessons.destroy');
+});
+
+Route::prefix('course-images')->group(function(){
+    Route::post('/', [CourseImageController::class, 'store'])->name('course-images.store');
+    Route::delete('/{id}', [CourseImageController::class, 'destroy'])->name('course-images.destroy');
 });
