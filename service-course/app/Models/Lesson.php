@@ -12,6 +12,11 @@ class Lesson extends Model
 
     protected $table = 'lessons';
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected $fillable = [
         'name', 'video', 'chapter_id'
     ];

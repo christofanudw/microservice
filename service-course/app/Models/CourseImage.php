@@ -12,6 +12,11 @@ class CourseImage extends Model
 
     protected $table = 'course_images';
 
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
+
     protected $fillable = [
         'course_id', 'image'
     ];

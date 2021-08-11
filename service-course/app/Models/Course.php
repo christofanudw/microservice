@@ -13,6 +13,11 @@ class Course extends Model
     use HasFactory;
     
     protected $table = 'courses';
+
+    protected $casts = [
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+    ];
     
     protected $fillable = [
         'name', 'certificate', 'thumbnail', 'type',
