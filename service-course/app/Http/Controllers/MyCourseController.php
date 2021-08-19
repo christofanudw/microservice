@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
+use App\Models\MyCourse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MyCourseController extends Controller
 {
@@ -11,19 +14,19 @@ class MyCourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $userId = $request->query('user_id');
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $myCourses = MyCourse::with('course')->get();
+        $myCourses->when($userId, function($query) use ($userId){
+            return $query->where('user_id', '=', $userId);
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $myCourses
+        ]);
     }
 
     /**
@@ -35,50 +38,50 @@ class MyCourseController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+        $rules = [
+            'course_id' => 'required|integer',
+            'user_id' => 'required|integer',
+        ];
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        $validator = Validator::make($data, $rules);
+        if($validator->fails()){
+            return response()->json([
+                'status' => 'error',
+                'message' => $validator->errors()
+            ], 400);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+        $course = Course::find($data['course_id']);
+        if(!$course){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Course data not available.'
+            ], 404);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $user = getUser($data['user_id']);
+        if($user['status'] === 'error'){
+            return response()->json([
+                'status' => $user['status'],
+                'message' => $user['message']
+            ], $user['http_code']);
+        }
+
+        $ifExistsMyCourse = MyCourse::where('course_id', '=', $data['course_id'])
+                                    ->where('user_id', '=', $data['user_id'])
+                                    ->first();
+        if($ifExistsMyCourse){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User has already taken this course.'
+            ], 409);
+        }
+
+        $myCourse = MyCourse::create($data);
+        return response()->json([
+            'status' => 'success',
+            'data' => $myCourse
+        ]);
     }
 }

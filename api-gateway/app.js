@@ -7,10 +7,13 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const coursesRouter = require('./routes/courses');
+const chaptersRouter = require('./routes/chapters');
+const lessonsRouter = require('./routes/lessons');
 const mediaRouter = require('./routes/media');
 const ordersRouter = require('./routes/orders');
 const paymentsRouter = require('./routes/payments');
 const refreshTokensRouter = require('./routes/refreshTokens');
+const mentorsRouter = require('./routes/mentors');
 
 // Middleware
 const verifyToken = require('./middleware/verifyToken');
@@ -25,10 +28,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/courses', verifyToken, coursesRouter);
+app.use('/courses', coursesRouter);
+app.use('/chapters', verifyToken, chaptersRouter);
+app.use('/lessons', lessonsRouter);
 app.use('/media', mediaRouter);
 app.use('/orders', ordersRouter);
 app.use('/payments', paymentsRouter);
 app.use('/refresh-tokens', refreshTokensRouter);
+app.use('/mentors', verifyToken, mentorsRouter);
 
 module.exports = app;

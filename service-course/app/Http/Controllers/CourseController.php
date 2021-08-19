@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Mentor;
+use App\Models\Review;
+use App\Models\Chapter;
+use App\Models\MyCourse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
@@ -99,7 +102,7 @@ class CourseController extends Controller
      */
     public function show($id)
     {
-        $course = Course::find($id);
+        $course = Course::with('chapters.lessons')->with('mentor')->with('courseImages')->find($id);
 
         if(!$course){
             return response()->json([
@@ -107,6 +110,28 @@ class CourseController extends Controller
                 'message' => 'Course data not available.'
             ], 404);
         }
+
+        $reviews = Review::where('course_id', '=', $id)->get()->toArray();
+        if(count($reviews) < 0){
+            $userIds = array_column($reviews, 'user_id');
+            $users = getUserById($userIds);
+            if($users['status'] === 'error'){
+                $reviews = [];
+            } else {
+                foreach($reviews as $key => $review){
+                    $userIndex = array_search('user_id', array_column($users['data'], 'id'));
+                    $review['users'] = $users['data'][$userIndex];
+                }
+            }
+        }
+
+        $totalStudents = MyCourse::where('course_id', '=', $id)->count();
+        $totalVideos = Chapter::where('course_id', '=', $id)->withCount('lessons')->get()->toArray();
+        $finalTotalVideos = array_sum(array_column($totalVideos, 'lessons_count'));
+
+        $course['reviews'] = $reviews;
+        $course['total_videos'] = $finalTotalVideos;
+        $course['total_students'] = $totalStudents;
 
         return response()->json([
             'status' => 'success',

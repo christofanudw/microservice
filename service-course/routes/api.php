@@ -1,12 +1,14 @@
 <?php
 
-use App\Http\Controllers\ChapterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CourseController;
-use App\Http\Controllers\CourseImageController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\MentorController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ChapterController;
+use App\Http\Controllers\MyCourseController;
+use App\Http\Controllers\CourseImageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,4 +56,15 @@ Route::prefix('lessons')->group(function(){
 Route::prefix('course-images')->group(function(){
     Route::post('/', [CourseImageController::class, 'store'])->name('course-images.store');
     Route::delete('/{id}', [CourseImageController::class, 'destroy'])->name('course-images.destroy');
+});
+
+Route::prefix('my-courses')->group(function(){
+    Route::post('/', [MyCourseController::class, 'store'])->name('my-courses.store');
+    Route::get('/', [MyCourseController::class, 'index'])->name('my-courses.index');
+});
+
+Route::prefix('reviews')->group(function(){
+    Route::post('/', [ReviewController::class, 'store'])->name('review.store');
+    Route::put('/{id}', [ReviewController::class, 'update'])->name('review.update');
+    Route::delete('/{id}', [ReviewController::class, 'destroy'])->name('review.destroy');
 });

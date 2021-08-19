@@ -22,6 +22,6 @@ class Mentor extends Model
     ];
 
     public function courses(){
-        return $this->hasMany('Course');
+        return $this->hasMany(Course::class);
     }
 }
