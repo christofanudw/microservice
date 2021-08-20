@@ -61,6 +61,7 @@ Route::prefix('course-images')->group(function(){
 Route::prefix('my-courses')->group(function(){
     Route::post('/', [MyCourseController::class, 'store'])->name('my-courses.store');
     Route::get('/', [MyCourseController::class, 'index'])->name('my-courses.index');
+    Route::post('/premium', [MyCourseController::class, 'createPremiumAccess'])->name('my-courses.premium');
 });
 
 Route::prefix('reviews')->group(function(){

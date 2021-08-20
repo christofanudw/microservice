@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Http;
 
 function getUser($userId){
-    $url = env('URL_SERVICE_USER').'users/'.$userId;
+    $url = env('SERVICE_USER_URL').'users/'.$userId;
     
     try {
         $response = Http::timeout(10)->get($url);
@@ -19,7 +19,7 @@ function getUser($userId){
 }
 
 function getUserById($userIds = []){
-    $url = env('URL_SERVICE_USER').'users/';
+    $url = env('SERVICE_USER_URL').'users/';
 
     try {
         if(count($userIds) === 0){
@@ -30,6 +30,22 @@ function getUserById($userIds = []){
             ];
         }
         $response = Http::timeout(10)->get($url, ['user_ids[]' => $userIds]);
+        $data = $response->json();
+        $data['http_code'] = $response->getStatusCode();
+        return $data;
+    } catch (\Throwable $th) {
+        return [
+            'status' => 'error',
+            'http_code' => 500,
+            'message' => 'Service user unavailable.'
+        ];
+    }
+}
+
+function postOrder($params){
+    $url = env('SERVICE_ORDER_URL').'api/orders';
+    try {
+        $response = Http::post($url, $params);
         $data = $response->json();
         $data['http_code'] = $response->getStatusCode();
         return $data;
